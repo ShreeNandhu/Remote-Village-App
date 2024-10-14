@@ -2,6 +2,7 @@ import { Box, Button, Divider, Flex, Stack, Text } from "@chakra-ui/react";
 import { useState } from "react"; // Import useState
 import TwoandTenAnswers from "./TwoandTenAnswers";
 import StudentsList from "./StudentsList"; // Import the component you want to render
+import MCQAnswer from "./MCQAnswer";
 
 const Layout = () => {
   const [showStudentList, setShowStudentList] = useState(false); // State to track rendering
@@ -63,6 +64,7 @@ const Layout = () => {
           />
 
           {/* Two and Ten Marks Answers */}
+          <MCQAnswer />
           <TwoandTenAnswers questionName="Two Marks" />
           <TwoandTenAnswers questionName="Ten Marks" />
         </>

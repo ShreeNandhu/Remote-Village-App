@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Flex, Text, Divider } from "@chakra-ui/react";
+import { Flex, Text, Divider, Box, Button } from "@chakra-ui/react";
 import QuestionCreationForm from "./QuestionCreationForm";
 import CreatedQuestions from "./CreatedQuestions";
 
@@ -29,6 +29,13 @@ const QuestionCreation = () => {
           createdQuestions={createdQuestions}
           onDeleteQuestion={handleDeleteQuestion}
         />
+
+        {/* Show Publish button only if there are questions */}
+        {createdQuestions.length > 0 && (
+          <Box display="flex" justifyContent="center" mt={4}>
+            <Button colorScheme="green">Publish</Button>
+          </Box>
+        )}
       </Flex>
     </>
   );
