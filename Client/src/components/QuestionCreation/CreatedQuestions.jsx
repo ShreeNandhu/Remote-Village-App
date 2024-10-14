@@ -22,6 +22,7 @@ const CreatedQuestions = ({ createdQuestions, onDeleteQuestion }) => {
                   </ul>
                 </Box>
               )}
+              
               <Button
                 colorScheme="red"
                 mt={2}
@@ -29,6 +30,7 @@ const CreatedQuestions = ({ createdQuestions, onDeleteQuestion }) => {
               >
                 Delete
               </Button>
+            
             </Box>
           ))
         ) : (

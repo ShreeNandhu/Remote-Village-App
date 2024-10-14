@@ -6,12 +6,14 @@ import {
   Select,
   FormControl,
   FormLabel,
+  Alert,
 } from "@chakra-ui/react";
 
 const QuestionCreationForm = ({ onCreateQuestion }) => {
   const [question, setQuestion] = useState("");
   const [questionType, setQuestionType] = useState("");
   const [mcqOptions, setMcqOptions] = useState([""]);
+  const [alertVisible, setAlertVisible] = useState(false);
 
   // Handle adding more MCQ options
   const addMcqOption = () => {
@@ -31,21 +33,30 @@ const QuestionCreationForm = ({ onCreateQuestion }) => {
 
   // Handle question creation
   const handleCreateQuestion = () => {
+    if (!questionType) {
+      setAlertVisible(true);
+      return;
+    }
     const newQuestion = {
       question,
       type: questionType,
       options: questionType === "MCQ" ? mcqOptions : null,
-      answer: questionType !== "MCQ" ? "" : null,
     };
     onCreateQuestion(newQuestion);
     // Reset fields
     setQuestion("");
     setMcqOptions([""]);
     setQuestionType("");
+    setAlertVisible(false);
   };
 
   return (
     <Box>
+      {alertVisible && ( // Conditionally render alert
+        <Alert status="error" mb={4}>
+          Please select a valid question type.
+        </Alert>
+      )}
       <FormControl id="question" mb={4}>
         <FormLabel>Enter Question</FormLabel>
         <Input
@@ -87,10 +98,11 @@ const QuestionCreationForm = ({ onCreateQuestion }) => {
           )}
         </Box>
       )}
-
-      <Button colorScheme="red" onClick={handleCreateQuestion}>
-        Create Question
-      </Button>
+      <Box display="flex" justifyContent="center" mt={4}>
+        <Button colorScheme="red" onClick={handleCreateQuestion}>
+          Create Question
+        </Button>
+        </Box>
     </Box>
   );
 };

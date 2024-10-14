@@ -1,6 +1,5 @@
 import { Button, Divider, Flex, Stack, Text, VStack } from "@chakra-ui/react";
 import React from "react";
-import { FaArrowDown } from "react-icons/fa";
 
 const SubjectMaterial = ({topic}) => {
   return (
@@ -39,7 +38,6 @@ const SubjectMaterial = ({topic}) => {
 
       {/* Right Side - Buttons */}
       <Flex>
-      <FaArrowDown />
         <Button colorScheme="blue" mx={1}>
           Download
         </Button>

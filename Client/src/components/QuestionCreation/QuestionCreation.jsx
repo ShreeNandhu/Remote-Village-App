@@ -19,11 +19,11 @@ const QuestionCreation = () => {
 
   return (
     <>
-      <Text color="red.500" fontWeight="bold">
+      <Text color="red.500" fontWeight="bold" fontSize="xl">
         Question Creation
       </Text>
       <Divider orientation="horizontal" border={2} />
-      <Flex direction="column" align="center" p={6}>
+      <Flex direction="column" p={3}>
         <QuestionCreationForm onCreateQuestion={handleCreateQuestion} />
         <CreatedQuestions
           createdQuestions={createdQuestions}
