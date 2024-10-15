@@ -19,7 +19,7 @@ const Main = ({ main , sidebar }) => {
       )}
 
       {/* Main content */}
-      <Box flex="1" bg="#FBF8DD" p="4" overflowY="auto">
+      <Box flex="1" bg="#FBF8DD" p="4" overflowY="none">
         {main}
       </Box>
     </Flex>

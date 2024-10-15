@@ -2,7 +2,7 @@ import { Box, Button, Divider, Flex, Stack, Text } from "@chakra-ui/react";
 import { useState } from "react"; // Import useState
 import TwoandTenAnswers from "./TwoandTenAnswers";
 import StudentsList from "./StudentsList"; // Import the component you want to render
-import MCQAnswer from "./MCQAnswer";
+import MCQAnswers from "./MCQAnswer";
 
 const Layout = () => {
   const [showStudentList, setShowStudentList] = useState(false); // State to track rendering
@@ -31,7 +31,9 @@ const Layout = () => {
             </Button>
 
             {/* Student Name */}
-            <Text fontSize="xl" fontWeight="bold">Student Name</Text>
+            <Text fontSize="xl" fontWeight="bold">
+              Student Name
+            </Text>
 
             {/* Center Content */}
             <Stack direction="row" spacing={3} align="center">
@@ -64,9 +66,12 @@ const Layout = () => {
           />
 
           {/* Two and Ten Marks Answers */}
-          <MCQAnswer />
+          <MCQAnswers questionName="Multiple Choice Question" />
           <TwoandTenAnswers questionName="Two Marks" />
           <TwoandTenAnswers questionName="Ten Marks" />
+          <Box display="flex" justifyContent={"flex-end"} mt={2}>
+            <Button colorScheme="green">Done</Button>
+          </Box>
         </>
       ) : (
         <StudentsList /> // Render StudentList if showStudentList is true

@@ -1,4 +1,4 @@
-import { Box, Textarea, Text, Stack } from "@chakra-ui/react";
+import { Box, Textarea, Text, Stack, Button } from "@chakra-ui/react";
 
 const TenMarksComponent = () => {
     const questions = [
@@ -24,6 +24,9 @@ const TenMarksComponent = () => {
            />
          </Box>
         ))}
+        <Box display="flex" justifyContent="flex-end">
+        <Button colorScheme="green">Submit</Button>
+      </Box>
       </Stack>
     </>
   );

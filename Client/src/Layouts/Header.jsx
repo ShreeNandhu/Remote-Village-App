@@ -112,7 +112,7 @@ const Header = () => {
             </Link>
             <Link
               as={RouterLink}
-              to="/login-signup"
+              to="/loginuser"
               _hover={{ textDecoration: "none" }}
             >
               <Text
