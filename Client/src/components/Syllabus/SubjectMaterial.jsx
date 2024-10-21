@@ -4,7 +4,7 @@ import React from "react";
 const SubjectMaterial = ({topic}) => {
   return (
     <>
-      <Text color="red.500" fontSize="xl" fontWeight={"bold"} mb={2}>
+      <Text color="red.500" fontSize="xl" fontWeight={"bold"} mb={2} mt={2}>
         {topic}
       </Text>
       <Divider orientation="horizontal" borderColor="black.500" borderWidth="2px" mb={3} />
@@ -19,7 +19,8 @@ const SubjectMaterial = ({topic}) => {
       p={3}
       alignItems="center"
       flexDirection="row"
-      justifyContent="space-between" // Space between items
+      justifyContent="space-between"
+     // Space between items
     >
       {/* Left Side - Example File */}
       <Text fontSize="3xl" fontWeight="bold">

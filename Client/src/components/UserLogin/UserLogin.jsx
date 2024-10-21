@@ -1,9 +1,26 @@
 import { Box, Button, Input, Stack, Text } from "@chakra-ui/react";
-import React from "react";
+import React, { useState } from "react";
 import { IoIosLogIn } from "react-icons/io";
-import { Link } from "react-router-dom";
+import axios from "axios"; // Import axios for making API requests
 
 const UserLogin = () => {
+  const [inputs, setInputs] = useState({
+    username: "",
+    password: ""
+  });
+  const [error, setError] = useState("");
+
+  const handleSubmit = async () => {
+    try {
+      const response = await axios.post("http://localhost:5000/loginuser", inputs);
+      console.log("Login successful, token:", response.data.token);
+      // You can save the token to localStorage and redirect the user
+      localStorage.setItem("token", response.data.token);
+    } catch (err) {
+      setError(err.response?.data?.message || "Something went wrong");
+    }
+  };
+
   return (
     <>
       <Stack gap={4} p={2}>
@@ -11,14 +28,27 @@ const UserLogin = () => {
           textAlign="center"
           fontWeight="bold"
           color="red.500"
-          fontSize="2xl" // Increased font size for better visibility
+          fontSize="2xl"
         >
           Login
         </Text>
-        <Input placeholder="Username" mb={4} />
-        <Input placeholder="Password" type="password" mb={4} />
+        {error && <Text color="red.500">{error}</Text>}
+        <Input
+          placeholder="Username"
+          mb={4}
+          w="auto"
+          value={inputs.username}
+          onChange={(e) => setInputs({ ...inputs, username: e.target.value })}
+        />
+        <Input
+          placeholder="Password"
+          type="password"
+          mb={4}
+          w="auto"
+          value={inputs.password}
+          onChange={(e) => setInputs({ ...inputs, password: e.target.value })}
+        />
         <Button
-          //onClick={handleSubmit}
           leftIcon={<IoIosLogIn />}
           colorScheme="red"
           width="full"
@@ -30,6 +60,7 @@ const UserLogin = () => {
             boxShadow: "0px 4px 15px rgba(255, 0, 0, 0.6)",
             transition: "all 0.3s ease",
           }}
+          onClick={handleSubmit}
         >
           Login
         </Button>
