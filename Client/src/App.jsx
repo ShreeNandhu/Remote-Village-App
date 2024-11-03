@@ -5,6 +5,7 @@ import Homepage from "./Pages/Homepage";
 import Evaluation from "./Pages/Evaluation";
 import Syllabus from "./Pages/Syllabus";
 import LoginPage from "./Pages/LoginPage";
+import Profilepage from "./Pages/Profilepage";
 
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
         <Route path="/Evaluation" element={<Evaluation />} />
         <Route path="/syllabus" element={<Syllabus />} />
         <Route path="/auth" element={<LoginPage/>} />
+        <Route path="/:username" element={<Profilepage />} />
         {/* You can add more routes here as needed */}
       </Routes>
     </Router>

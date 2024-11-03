@@ -5,7 +5,8 @@ import { useLocation } from "react-router-dom";
 
 const Main = ({ main , sidebar }) => {
   const location = useLocation();
-  const showSidebar = location.pathname !== '/';
+  const showSidebar = location.pathname !== '/' ;
+
   return (
     <Flex
       direction="row"

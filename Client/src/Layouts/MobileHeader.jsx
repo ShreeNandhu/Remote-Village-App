@@ -67,9 +67,15 @@ const MobileHeader = ({ onOpen, isOpen, onClose }) => {
                 <Text mb={4}>Evaluation</Text>
               </Link>
               {user ? (
-                <Text mb={4} fontWeight="bold">
+                <Link
+                as={RouterLink}
+                to={`/${user.username}`} // Use curly braces `{}` for the dynamic template literal
+                _hover={{ textDecoration: "none" }}
+              >
+                <Text fontSize="md" fontWeight="bold" cursor="pointer">
                   {user.username || "User"}
                 </Text>
+              </Link>
               ) : (
                 <Link as={RouterLink} to="/auth" onClick={onClose} _hover={{ textDecoration: "none" }}>
                   <Text mb={4}>Login/SignUp</Text>
