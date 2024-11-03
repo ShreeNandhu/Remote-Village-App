@@ -15,8 +15,7 @@ function App() {
         <Route path="/assessment" element={<Assessment />} />
         <Route path="/Evaluation" element={<Evaluation />} />
         <Route path="/syllabus" element={<Syllabus />} />
-        <Route path="/loginuser" element={<LoginPage/>} />
-        <Route path="/signup" element={<LoginPage/>} />
+        <Route path="/auth" element={<LoginPage/>} />
         {/* You can add more routes here as needed */}
       </Routes>
     </Router>

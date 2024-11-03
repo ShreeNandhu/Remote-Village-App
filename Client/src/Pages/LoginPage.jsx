@@ -1,21 +1,23 @@
 import { useState } from "react";
 import UserLogin from "../components/UserLogin/UserLogin";
-import UserSignUp from "../components/UserLogin/UserSignUp"; // Ensure the casing is correct
+import UserSignUp from "../components/UserLogin/UserSignUp";
 import { Box, Button, Flex, VStack, Text } from "@chakra-ui/react";
 import { IoMdClose } from "react-icons/io"; // Import close icon
-import { useNavigate, Link, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
   const navigate = useNavigate();
-  const location = useLocation();
-  
-  // Check if the current route is '/signup', otherwise it's login
-  const isLogin = location.pathname === '/loginuser';
+  const [isLogin, setIsLogin] = useState(true); // State to toggle between login and sign-up
 
   // Handle the close button action (navigate to the homepage or any desired route)
   const handleClose = () => {
     navigate("/");
     console.log("Close button clicked");
+  };
+
+  // Function to toggle between Login and Sign Up
+  const toggleForm = () => {
+    setIsLogin((prev) => !prev);
   };
 
   return (
@@ -60,8 +62,8 @@ const LoginPage = () => {
             {isLogin ? "Don't have an account?" : "Already have an account?"}
           </Text>
           <Text
-            as={Link}
-            to={isLogin ? "/signup" : "/loginuser"} // Navigate to the appropriate route
+            as="span" // Use span instead of Link to avoid route navigation
+            onClick={toggleForm} // Toggle the form on click
             color={"blue.500"}
             cursor={"pointer"}
             _hover={{

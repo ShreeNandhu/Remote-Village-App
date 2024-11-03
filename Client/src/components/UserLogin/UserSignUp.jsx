@@ -1,71 +1,34 @@
-import { Flex, Input, Select, Stack, Text, Button, Alert, AlertIcon } from "@chakra-ui/react";
 import React, { useState } from "react";
-import { IoIosLogIn } from "react-icons/io";
+import {
+  Flex,
+  Stack,
+  Input,
+  Select,
+  Button,
+  Text,
+  Alert,
+  AlertIcon,
+  InputGroup,
+  InputRightElement,
+} from "@chakra-ui/react";
+import { IoIosLogIn } from "react-icons/io"; // Make sure you have this icon imported
+import useSignUp from "../../hooks/useSignUp";
+import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 
 const UserSignUp = () => {
-  const [inputs, setInputs] = useState({
-    username: "",
-    email: "",
-    district: "",
-    board: "",
-    password: "",
-    confirmPassword: "",
-  });
-
-  const [error, setError] = useState(null); // State for handling errors
-  const [loading, setLoading] = useState(false); // State for loading indicator
-
-  const handleSubmit = async () => {
-    setLoading(true);
-    setError(null);
-
-    if (inputs.password !== inputs.confirmPassword) {
-      setError({ message: "Passwords do not match." });
-      setLoading(false);
-      return;
-    }
-
-    // Additional validation (optional)
-    if (!inputs.email.includes("@")) {
-      setError({ message: "Please enter a valid email." });
-      setLoading(false);
-      return;
-    }
-
-    try {
-      const response = await fetch("http://localhost:5000/signup", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username: inputs.username,
-          email: inputs.email,
-          district: inputs.district,
-          board: inputs.board,
-          password: inputs.password,
-        }),
-      });
-
-      if (!response.ok) {
-        // Handle HTTP errors
-        const errorData = await response.json();
-        throw new Error(errorData.message || "An error occurred during signup.");
-      }
-
-      const data = await response.json();
-      console.log("User registered successfully:", data);
-      // Optionally clear inputs or redirect
-    } catch (error) {
-      setError({ message: error.message });
-    } finally {
-      setLoading(false);
-    }
-  };
+  const { inputs, error, loading, handleChange, handleSubmit } = useSignUp();
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   return (
     <>
-      <Text textAlign="center" fontWeight="bold" color="red.500" fontSize="2xl" mb={4}>
+      <Text
+        textAlign="center"
+        fontWeight="bold"
+        color="red.500"
+        fontSize="2xl"
+        mb={4}
+      >
         Sign Up
       </Text>
 
@@ -74,44 +37,75 @@ const UserSignUp = () => {
         <Stack spacing={4} flex={1} pr={2}>
           <Input
             placeholder="Username"
+            name="username"
             value={inputs.username}
-            onChange={(e) => setInputs({ ...inputs, username: e.target.value })}
+            onChange={handleChange}
           />
           <Input
             placeholder="Email"
             type="email"
+            name="email"
             value={inputs.email}
-            onChange={(e) => setInputs({ ...inputs, email: e.target.value })}
+            onChange={handleChange}
           />
-          <Input
-            placeholder="Password"
-            type="password"
-            value={inputs.password}
-            onChange={(e) => setInputs({ ...inputs, password: e.target.value })}
-          />
+
+          <InputGroup>
+            <Input
+              placeholder="Password"
+              fontSize={14}
+              type={showPassword ? "text" : "password"}
+              value={inputs.password}
+              onChange={handleChange}
+              name="password"
+            />
+            <InputRightElement h="full">
+              <Button
+                variant={"ghost"}
+                size={"sm"}
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? <ViewIcon /> : <ViewOffIcon />}
+              </Button>
+            </InputRightElement>
+          </InputGroup>
         </Stack>
 
         {/* Right Column */}
         <Stack spacing={4} flex={1} pl={2}>
           <Select
             placeholder="Select Board"
+            name="board"
             value={inputs.board}
-            onChange={(e) => setInputs({ ...inputs, board: e.target.value })}
+            onChange={handleChange}
           >
             <option value="stateboard">Stateboard</option>
             <option value="cbse">CBSE</option>
           </Select>
           <Input
             placeholder="District"
+            name="district"
             value={inputs.district}
-            onChange={(e) => setInputs({ ...inputs, district: e.target.value })}
+            onChange={handleChange}
           />
-          <Input
-            placeholder="Confirm Password"
-            type="password"
-            value={inputs.confirmPassword}
-            onChange={(e) => setInputs({ ...inputs, confirmPassword: e.target.value })}
-          />
+          <InputGroup>
+            <Input
+              placeholder="Confirm Password"
+              fontSize={14}
+              type={showConfirmPassword ? "text" : "password"}
+              name="confirmPassword"
+              value={inputs.confirmPassword}
+              onChange={handleChange}
+            />
+            <InputRightElement h="full">
+              <Button
+                variant={"ghost"}
+                size={"sm"}
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              >
+                {showConfirmPassword ? <ViewIcon /> : <ViewOffIcon />}
+              </Button>
+            </InputRightElement>
+          </InputGroup>
         </Stack>
       </Flex>
 

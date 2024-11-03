@@ -48,5 +48,6 @@ bash
 Copy code
 npm install body-parser
 
+npm install -g nodemon
 
 

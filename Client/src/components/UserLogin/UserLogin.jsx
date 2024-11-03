@@ -1,25 +1,9 @@
-import { Box, Button, Input, Stack, Text } from "@chakra-ui/react";
-import React, { useState } from "react";
+import { Stack, Text, Input, Button } from "@chakra-ui/react";
 import { IoIosLogIn } from "react-icons/io";
-import axios from "axios"; // Import axios for making API requests
+import useLogin from "../../hooks/useLogin"; 
 
 const UserLogin = () => {
-  const [inputs, setInputs] = useState({
-    username: "",
-    password: ""
-  });
-  const [error, setError] = useState("");
-
-  const handleSubmit = async () => {
-    try {
-      const response = await axios.post("http://localhost:5000/loginuser", inputs);
-      console.log("Login successful, token:", response.data.token);
-      // You can save the token to localStorage and redirect the user
-      localStorage.setItem("token", response.data.token);
-    } catch (err) {
-      setError(err.response?.data?.message || "Something went wrong");
-    }
-  };
+  const { inputs, error, handleChange, handleSubmit } = useLogin();
 
   return (
     <>
@@ -34,19 +18,21 @@ const UserLogin = () => {
         </Text>
         {error && <Text color="red.500">{error}</Text>}
         <Input
-          placeholder="Username"
+          placeholder="Email" // Updated placeholder
           mb={4}
           w="auto"
-          value={inputs.username}
-          onChange={(e) => setInputs({ ...inputs, username: e.target.value })}
+          name="email" // Added name attribute
+          value={inputs.email} // Changed to email
+          onChange={handleChange} // Using the hook's change handler
         />
         <Input
           placeholder="Password"
           type="password"
           mb={4}
           w="auto"
+          name="password" // Added name attribute
           value={inputs.password}
-          onChange={(e) => setInputs({ ...inputs, password: e.target.value })}
+          onChange={handleChange} // Using the hook's change handler
         />
         <Button
           leftIcon={<IoIosLogIn />}
@@ -60,7 +46,7 @@ const UserLogin = () => {
             boxShadow: "0px 4px 15px rgba(255, 0, 0, 0.6)",
             transition: "all 0.3s ease",
           }}
-          onClick={handleSubmit}
+          onClick={handleSubmit} // Using the hook's submit handler
         >
           Login
         </Button>
