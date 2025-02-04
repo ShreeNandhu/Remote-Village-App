@@ -2,18 +2,17 @@ import React from 'react';
 import { Box, Button, Divider, Flex, Spinner, Stack, Text, VStack } from '@chakra-ui/react';
 import useFetchDocument from '../../hooks/useFetchDocument';
 
-
 const SubjectMaterials = ({ selectedSubject }) => {
   const { documents, loading, error } = useFetchDocument();
 
-  // Filter documents by the selected subject
-  const filteredDocuments = selectedSubject
-    ? documents.filter(doc => doc.subjectName === selectedSubject.subjectName) // Match subjectName
+  // Ensure documents are not undefined before filtering
+  const filteredDocuments = selectedSubject && documents
+    ? documents.filter(doc => doc.subjectName?.toLowerCase() === selectedSubject.toLowerCase()) // Case-insensitive match
     : [];
 
   return (
     <>
-      <Text color="blue.300" fontSize="xl" fontWeight={"bold"} mb={2} mt={2}>
+      <Text color="blue.300" fontSize="xl" fontWeight="bold" mb={2} mt={2}>
         Notes
       </Text>
       <Divider orientation="horizontal" borderColor="black.500" borderWidth="2px" mb={3} />
@@ -40,28 +39,32 @@ const SubjectMaterials = ({ selectedSubject }) => {
                 flexDirection="row"
                 justifyContent="space-between"
               >
+                {/* Left Side - File Name */}
                 <Text fontSize="3xl" fontWeight="bold">
                   {doc.fileName || "Example File"} {/* Display file name */}
                 </Text>
 
+                {/* Center - Standard */}
                 <VStack flex={1} mx={4} alignItems="center" spacing={0}>
                   <Text fontSize="md" fontWeight="bold" color="gray">
                     Standard:
                   </Text>
                   <Text fontSize="md" color="gray.600">
-                    {doc.standard || "Author Name"} {/* Display standard */}
+                    {doc.standard || "N/A"} {/* Display standard */}
                   </Text>
                 </VStack>
 
+                {/* Center - Board */}
                 <VStack flex={1} mx={4} alignItems="center" spacing={0}>
                   <Text fontSize="md" fontWeight="bold" color="gray">
                     Board
                   </Text>
                   <Text fontSize="md" color="gray.600">
-                    {doc.board || "Board Name"} {/* Display board */}
+                    {doc.board || "N/A"} {/* Display board */}
                   </Text>
                 </VStack>
 
+                {/* Right Side - Download Button */}
                 <Flex>
                   <Button colorScheme="green" mx={1} onClick={() => window.open(doc.url, "_blank")}>
                     Download
@@ -70,7 +73,9 @@ const SubjectMaterials = ({ selectedSubject }) => {
               </Flex>
             ))
           ) : (
-            <Text>Select the Subject ortherwise No documents available for this subject.</Text>
+            <Text color="gray.600" fontStyle="italic">
+              {selectedSubject ? "No documents available for this subject." : "Select a subject to view documents."}
+            </Text>
           )
         )}
       </Stack>

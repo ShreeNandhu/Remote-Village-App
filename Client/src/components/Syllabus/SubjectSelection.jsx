@@ -3,31 +3,35 @@ import React from 'react';
 import useFetchDocument from '../../hooks/useFetchDocument';
 
 const SubjectSelection = ({ onSubjectSelect }) => {
-  // Assuming useFetchDocument fetches all documents
-  const { documents } = useFetchDocument(); 
+  const { documents } = useFetchDocument(); // Fetch all subjects
 
-  // Define the function to handle selection
-  const onOptionSelect = (option) => {
-    onSubjectSelect(option); // Pass the selected subject back to the parent
+  const onOptionSelect = (subjectName) => {
+    if (subjectName) {
+      onSubjectSelect(subjectName); // Pass subject name to parent component
+    }
   };
 
   return (
     <>
-      <Text fontSize="xl" fontWeight="bold" color={"black"} mb={2}>
+      <Text fontSize="xl" fontWeight="bold" color="black" mb={2}>
         All Subjects
       </Text>
-      <Stack spacing={3} alignItems={"center"}>
-        {documents.map((option) => (
-          <Text 
-            key={option.id} 
-            onClick={() => onOptionSelect(option)}  // Call onOptionSelect when a subject is clicked
-            cursor="pointer" 
-            _hover={{ color:"blue.300", fontWeight:"bold" }}
-            transition={"all"}
-          >
-            {option.subjectName} {/* Display the subject name */}
-          </Text>
-        ))}
+      <Stack spacing={3} alignItems="center">
+        {documents?.length > 0 ? (
+          documents.map((option) => (
+            <Text
+              key={option.id} 
+              onClick={() => onOptionSelect(option.subjectName)} 
+              cursor="pointer"
+              _hover={{ color: "blue.300", fontWeight: "bold" }}
+              transition="all"
+            >
+              {option.subjectName}
+            </Text>
+          ))
+        ) : (
+          <Text color="gray.500">No subjects available.</Text>
+        )}
       </Stack>
     </>
   );
