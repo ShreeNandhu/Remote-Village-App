@@ -14,21 +14,43 @@ import {
 import { IoIosLogIn } from "react-icons/io"; // Make sure you have this icon imported
 import useSignUp from "../../hooks/useSignUp";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
+import GoogleAuth from "./GoogleAuth";
 
 const UserSignUp = () => {
-  const { inputs, error, loading, handleChange, handleSubmit } = useSignUp();
+  const [inputs, setInputs] = useState({
+    email: "",
+    password: "",
+    username: "",
+    district: "",
+    board: "",
+    confirmPassword: "",
+  });
+
+  const { error, loading, signup } = useSignUp();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
+  // Handle change of input fields
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setInputs((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  // Handle form submission (signup)
+  const handleSignUp = () => {
+    if (inputs.password !== inputs.confirmPassword) {
+      alert("Passwords do not match!");
+      return;
+    }
+    signup(inputs); // Call the signup function from the hook
+  };
+
   return (
     <>
-      <Text
-        textAlign="center"
-        fontWeight="bold"
-        color="red.500"
-        fontSize="2xl"
-        mb={4}
-      >
+      <Text textAlign="center" fontWeight="bold" color="green.500" fontSize="2xl" mb={4}>
         Sign Up
       </Text>
 
@@ -59,11 +81,7 @@ const UserSignUp = () => {
               name="password"
             />
             <InputRightElement h="full">
-              <Button
-                variant={"ghost"}
-                size={"sm"}
-                onClick={() => setShowPassword(!showPassword)}
-              >
+              <Button variant="ghost" size="sm" onClick={() => setShowPassword(!showPassword)}>
                 {showPassword ? <ViewIcon /> : <ViewOffIcon />}
               </Button>
             </InputRightElement>
@@ -98,8 +116,8 @@ const UserSignUp = () => {
             />
             <InputRightElement h="full">
               <Button
-                variant={"ghost"}
-                size={"sm"}
+                variant="ghost"
+                size="sm"
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
               >
                 {showConfirmPassword ? <ViewIcon /> : <ViewOffIcon />}
@@ -117,24 +135,27 @@ const UserSignUp = () => {
         </Alert>
       )}
 
-      {/* Sign up button */}
+      {/* Sign Up button */}
       <Button
-        onClick={handleSubmit}
+        onClick={handleSignUp}
         leftIcon={<IoIosLogIn />}
-        colorScheme="red"
+        colorScheme="green"
         width="full"
         borderRadius="md"
         mt={4}
         isLoading={loading} // Show loading state on button
         _hover={{
           bg: "white",
-          color: "red.500",
-          boxShadow: "0px 4px 15px rgba(255, 0, 0, 0.6)",
+          color: "green.500",
+          boxShadow: "0px 4px 15px rgba(0, 255, 0, 0.6)",
           transition: "all 0.3s ease",
         }}
       >
         Sign Up
       </Button>
+
+      {/* Google Authentication Component */}
+      <GoogleAuth />
     </>
   );
 };

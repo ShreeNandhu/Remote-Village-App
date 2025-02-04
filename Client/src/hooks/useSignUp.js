@@ -1,79 +1,73 @@
-import { useState } from "react";
-import axios from "axios";
-import useShowToast from "./useShowToast"; // Adjust the import path
+import { useCreateUserWithEmailAndPassword } from "react-firebase-hooks/auth";
+import { auth, firestore } from "../firebase/firebase"; // Adjust paths as needed
+import { collection, doc, getDocs, query, setDoc, where } from "firebase/firestore";
+import useShowToast from "./useShowToast";
+import useAuthStore from "../store/authStore";
 
 const useSignUp = () => {
+  const [createUserWithEmailAndPassword, , loading, error] = useCreateUserWithEmailAndPassword(auth);
   const showToast = useShowToast();
-  const [inputs, setInputs] = useState({
-    username: "",
-    email: "",
-    district: "",
-    board: "",
-    password: "",
-    confirmPassword: "",
-  });
-  const [loading, setLoading] = useState(false);
+  const loginUser = useAuthStore((state) => state.login);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setInputs((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleSubmit = async () => {
-    setLoading(true);
-
-    // Password match validation
-    if (inputs.password !== inputs.confirmPassword) {
-      showToast("Password Error", "Passwords do not match.", "error");
-      setLoading(false);
+  const signup = async (inputs) => {
+    if (!inputs.email || !inputs.password || !inputs.username || !inputs.district || !inputs.board || !inputs.confirmPassword) {
+      showToast("Error", "Please fill all the fields", "error");
       return;
     }
 
     // Email validation
     if (!inputs.email.includes("@")) {
       showToast("Email Error", "Please enter a valid email.", "error");
-      setLoading(false);
+      return;
+    }
+
+    // Password match validation
+    if (inputs.password !== inputs.confirmPassword) {
+      showToast("Password Error", "Passwords do not match.", "error");
+      return;
+    }
+
+    const usersRef = collection(firestore, "users");
+
+    // Check if username already exists
+    const q = query(usersRef, where("username", "==", inputs.username));
+    const querySnapshot = await getDocs(q);
+
+    if (!querySnapshot.empty) {
+      showToast("Error", "Username already exists", "error");
       return;
     }
 
     try {
-      const response = await axios.post("http://localhost:5000/signup", {
-        username: inputs.username,
-        email: inputs.email,
-        district: inputs.district,
-        board: inputs.board,
-        password: inputs.password,
-      });
+      const newUser = await createUserWithEmailAndPassword(inputs.email, inputs.password);
 
-      // Show success toast on successful registration
-      showToast(
-        "User registered",
-        "You have successfully registered!",
-        "success"
-      );
-    } catch (error) {
-      // Show error toast on catch
-      if (error.response) {
-        showToast(
-          "Signup Error",
-          error.response.data.message || "An error occurred during signup.",
-          "error"
-        );
-      } else {
+      if (!newUser && error) {
         showToast("Error", error.message, "error");
+        return;
       }
-    } finally {
-      setLoading(false);
+
+      if (newUser) {
+        const userDoc = {
+          uid: newUser.user.uid,
+          email: inputs.email,
+          username: inputs.username,
+          district: inputs.district,
+          board: inputs.board,
+          attendedQuestions: [],
+          role: "user",
+        };
+
+        await setDoc(doc(firestore, "users", newUser.user.uid), userDoc);
+        localStorage.setItem("user-info", JSON.stringify(userDoc));
+        loginUser(userDoc); 
+        showToast("User registered", "You have successfully registered!", "success");
+      }
+    } catch (error) {
+      showToast("Signup Error", error.message, "error");
     }
   };
 
-  return {
-    inputs,
-    error: null, // No need to manage error state in the hook
-    loading,
-    handleChange,
-    handleSubmit,
-  };
+  return { loading, error, signup };
 };
 
 export default useSignUp;
