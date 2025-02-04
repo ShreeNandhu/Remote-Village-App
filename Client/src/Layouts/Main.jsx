@@ -5,22 +5,23 @@ import { useLocation } from "react-router-dom";
 
 const Main = ({ main , sidebar }) => {
   const location = useLocation();
-  const showSidebar = location.pathname !== '/' ;
+  const showSidebar = location.pathname !== '/' && location.pathname !== '/about' && location.pathname !== '/profile';
+
 
   return (
     <Flex
       direction="row"
-      flex="1" // Ensure Main takes available height between Header and Footer
-      overflowY="auto" // Enable scrolling for content overflow
+      flex="1" 
+      overflowY="auto" 
     >
       {showSidebar && ( 
-      <Box width="160px" bg="#FFEEAD">
+      <Box width="160px" bg="#FBF8DD">
          <Sidebar sidebar={sidebar} />
       </Box>
       )}
 
       {/* Main content */}
-      <Box flex="1" bg="#FBF8DD" p="4" overflowY="none">
+      <Box flex="1" bg="white" p="2" overflowY="none">
         {main}
       </Box>
     </Flex>

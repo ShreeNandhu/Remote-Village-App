@@ -1,13 +1,13 @@
 import React from "react";
 import { Box, Button, Stack, Flex } from "@chakra-ui/react";
 
-const CreatedQuestions = ({ createdQuestions, onDeleteQuestion }) => {
+const CreatedQuestions = ({ createdQuestions = [], onDeleteQuestion }) => {
   return (
-    <Box mt={6} w="100%">
+    <Box mt={6} w="100%" bg="white">
       <Stack spacing={4}>
         {createdQuestions.length > 0 ? (
           createdQuestions.map((q, index) => (
-            <Box key={index} p={4} borderWidth="1px" borderRadius="md">
+            <Box key={index} p={4} borderWidth="2px" borderRadius="md" >
               <strong>Question {index + 1}:</strong> {q.question} <br />
               <strong>Type:</strong> {q.type} <br />
               {q.type === "MCQ" && (
@@ -30,7 +30,6 @@ const CreatedQuestions = ({ createdQuestions, onDeleteQuestion }) => {
               >
                 Delete
               </Button>
-            
             </Box>
           ))
         ) : (

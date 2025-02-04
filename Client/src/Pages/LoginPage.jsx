@@ -4,20 +4,27 @@ import UserSignUp from "../components/UserLogin/UserSignUp";
 import { Box, Button, Flex, VStack, Text } from "@chakra-ui/react";
 import { IoMdClose } from "react-icons/io"; // Import close icon
 import { useNavigate } from "react-router-dom";
+import AdminLogin from "../components/AdminLogin/AdminLogin";
+import AdminSignUp from "../components/AdminLogin/AdminSignUp";
 
 const LoginPage = () => {
   const navigate = useNavigate();
-  const [isLogin, setIsLogin] = useState(true); // State to toggle between login and sign-up
+  const [isUserLogin, setIsUserLogin] = useState(true);
+  const [activeRole, setActiveRole] = useState("User");
+  const [isAdminLogin, setIsAdminLogin] = useState(true);
 
   // Handle the close button action (navigate to the homepage or any desired route)
   const handleClose = () => {
     navigate("/");
-    console.log("Close button clicked");
   };
 
-  // Function to toggle between Login and Sign Up
-  const toggleForm = () => {
-    setIsLogin((prev) => !prev);
+
+  const renderForm = () => {
+    if (activeRole === "User") {
+      return isUserLogin ? <UserLogin /> : <UserSignUp />;
+    } else if (activeRole === "Admin") {
+      return isAdminLogin ? <AdminLogin /> : <AdminSignUp />;
+    }
   };
 
   return (
@@ -26,16 +33,54 @@ const LoginPage = () => {
       alignItems="center"
       height="100vh"
       width="100vw"
-      bgColor="#FBF8DD"
+      bgColor={activeRole === "User" ? "green.50" : "blue.50"}
     >
+      <Flex
+        position="absolute"
+        top={4}
+        left="50%"
+        transform="translateX(-50%)"
+        gap={4} // Space between buttons
+      >
+        <Button
+          size="lg"
+          bg={activeRole === "User" ? "green.500" : "white"} // Conditional background color
+          color={activeRole === "User" ? "white" : "green.500"} // Conditional text color
+          onClick={() => setActiveRole("User")}
+          _hover={{
+            bg: "white",
+            color: "green.500",
+            boxShadow: "0px 4px 15px rgba(0, 255, 0, 0.6)",
+            transition: "all 0.3s ease",
+          }}
+        >
+          User
+        </Button>
+
+        <Button
+          size="lg"
+          bg={activeRole === "Admin" ? "blue.500" : "white"} // Conditional background color
+          color={activeRole === "Admin" ? "white" : "blue.500"} // Conditional text color
+          onClick={() => setActiveRole("Admin")}
+          _hover={{
+            bg: "white",
+            color: "blue.500",
+            boxShadow: "0px 4px 15px rgba(0, 0, 255, 0.6)",
+            transition: "all 0.3s ease",
+          }}
+        >
+          Admin
+        </Button>
+      </Flex>
       <Box
         bgColor="white"
-        p={8} // Increased padding for better spacing
+        p={8}
         boxShadow="lg"
         borderRadius="md"
-        w={["90%", "500px"]} // Responsive width (90% for mobile, 500px for larger screens)
-        h={"auto"} // Adjust height to fit content dynamically
-        position="relative" // Set position to relative for absolute positioning of close button
+        w={["90%", "500px"]}
+        h={"auto"}
+        position="relative"
+        mt={10}
       >
         {/* Close Button */}
         <Button
@@ -51,19 +96,31 @@ const LoginPage = () => {
           <IoMdClose size="24px" /> {/* Adjust icon size for better UI */}
         </Button>
 
-        {/* Content: Sign Up / Login Form */}
+        {/* Render Content Based on Active Role */}
         <VStack spacing={6} mt={4}>
-          {isLogin ? <UserLogin /> : <UserSignUp />}
+          {renderForm()}
         </VStack>
 
         {/* Toggle Between Login and Sign Up */}
         <Flex alignItems="center" justifyContent="center" mt={6}>
           <Text mx={2} fontSize={14}>
-            {isLogin ? "Don't have an account?" : "Already have an account?"}
+            {activeRole === "User"
+              ? isUserLogin
+                ? "Don't have an account?"
+                : "Already have an account?"
+              : isAdminLogin
+              ? "Don't have an account?"
+              : "Already have an account?"}
           </Text>
           <Text
-            as="span" // Use span instead of Link to avoid route navigation
-            onClick={toggleForm} // Toggle the form on click
+            as="span"
+            onClick={() => {
+              if (activeRole === "User") {
+                setIsUserLogin(!isUserLogin);
+              } else {
+                setIsAdminLogin(!isAdminLogin);
+              }
+            }}
             color={"blue.500"}
             cursor={"pointer"}
             _hover={{
@@ -71,7 +128,13 @@ const LoginPage = () => {
               color: "blue.600",
             }}
           >
-            {isLogin ? "Sign up" : "Log in"}
+            {activeRole === "User"
+              ? isUserLogin
+                ? "Sign up"
+                : "Log in"
+              : isAdminLogin
+              ? "Sign up"
+              : "Log in"}
           </Text>
         </Flex>
       </Box>

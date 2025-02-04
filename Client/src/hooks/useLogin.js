@@ -1,52 +1,50 @@
-// src/hooks/useLogin.js
-import { useState } from "react";
-import axios from "axios";
-import useShowToast from "./useShowToast"; // Import your toast hook
-import useAuthStore from "../store/authStore"; // Import Zustand store for auth state
+import { useSignInWithEmailAndPassword } from "react-firebase-hooks/auth";
+import useShowToast from "./useShowToast";
+import { auth, firestore } from "../firebase/firebase";
+import { doc, getDoc } from "firebase/firestore";
+import useAuthStore from "../store/authStore";
 import { useNavigate } from "react-router-dom";
 
 const useLogin = () => {
-  const [inputs, setInputs] = useState({
-    email: "",
-    password: "",
-  });
-  const [error, setError] = useState("");
-  const showToast = useShowToast(); // Initialize the toast function
+  const showToast = useShowToast();
+  const navigate = useNavigate();
+  const [signInWithEmailAndPassword, , loading, error] = useSignInWithEmailAndPassword(auth);
   const loginUser = useAuthStore((state) => state.login);
-  const navigate = useNavigate();// Zustand login action
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setInputs((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleSubmit = async () => {
-    setError(""); // Reset error before making the request
+  const login = async (inputs) => {
+    if (!inputs.email || !inputs.password) {
+      return showToast("Error", "Please fill all the fields", "error");
+    }
     try {
-      const response = await axios.post("http://localhost:5000/loginuser", {
-        email: inputs.email,
-        password: inputs.password,
-      });
-      showToast("Login successful", "You have successfully logged in!", "success");
-      // Update Zustand store with user data
-      loginUser(response.data.user);
-      // Store token or user data as needed
-      localStorage.setItem("user-info", JSON.stringify(response.data.user));
-      navigate("/");
-    } catch (err) {
-      // Display error in a toast notification
-      const errorMessage = err.response?.data?.message || "Something went wrong";
-      showToast("Login failed", errorMessage, "error");
-      setError(errorMessage);
+      const userCred = await signInWithEmailAndPassword(inputs.email, inputs.password);
+
+      if (userCred) {
+        const docRef = doc(firestore, "users", userCred.user.uid);
+        const docSnap = await getDoc(docRef);
+        
+        localStorage.setItem("user-info", JSON.stringify(docSnap.data()));
+        loginUser(docSnap.data());
+        navigate("/");
+      }
+    } catch (error) {
+      // Handle incorrect password or other errors
+      if (error.code === "auth/wrong-password") {
+        showToast("Error", "Incorrect password. Please try again.", "error");
+        console.error("Firebase Error:", error);
+      } else if (error.code === "auth/user-not-found") {
+        showToast("Error", "No user found with this email. Please check the email or sign up.", "error");
+      } else {
+        showToast("Error", error.message, "error");
+      }
+
+      // Reload the page to reset state after error
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000); // Reload after showing the toast
     }
   };
 
-  return {
-    inputs,
-    error,
-    handleChange,
-    handleSubmit,
-  };
+  return { loading, error, login };
 };
 
 export default useLogin;

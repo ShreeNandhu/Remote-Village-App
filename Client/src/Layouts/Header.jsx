@@ -1,7 +1,8 @@
-import { useDisclosure } from "@chakra-ui/react";
 import { useMediaQuery } from "@chakra-ui/media-query";
-import DesktopHeader from "./DesktopHeader";
-import MobileHeader from "./MobileHeader";
+import { useDisclosure } from "@chakra-ui/react";
+import DesktopHeader from "./Header/DesktopHeader";
+import MobileHeader from "./Header/MobileHeader";
+
 
 const Header = () => {
   const { isOpen, onOpen } = useDisclosure();
