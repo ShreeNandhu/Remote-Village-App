@@ -10,7 +10,7 @@ const MCQComponent = ({ question, onAnswerChange }) => {
   };
 
   return (
-    <Box p={4} width="100%" maxW="100%" mx="auto" borderWidth={2} borderRadius="md" bg={"blue.50"}>
+    <Box p={4} width="100%" maxW="100%" mx="auto" borderWidth={3} borderRadius="md" bg={"blue.50"} mt="10px">
       <Text fontSize="lg" fontWeight="bold">{question.question}</Text>
       <RadioGroup onChange={handleAnswerChange} value={selectedAnswer}>
         <Stack spacing={3}>

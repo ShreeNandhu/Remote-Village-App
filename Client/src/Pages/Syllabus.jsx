@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { Center, Text } from '@chakra-ui/react'; // For error handling when not logged in
 import PageLayout from '../Layouts/PageLayout';
-import SubjectSelection from './../components/Syllabus/SubjectSelection';
-import SubjectMaterials from '../components/Syllabus/SubjectMaterials';
 import useAuthStore from '../store/authStore';
+import SubjectSelection from '../components/Syllabus/SubjectSelection';
+import SubjectMaterials from '../components/Syllabus/SubjectMaterial';
  // Use the Zustand store for user authentication
 
 const Syllabus = () => {

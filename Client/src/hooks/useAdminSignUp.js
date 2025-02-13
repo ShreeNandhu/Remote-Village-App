@@ -2,13 +2,11 @@ import { useCreateUserWithEmailAndPassword } from "react-firebase-hooks/auth";
 import { auth, firestore } from "../firebase/firebase";
 import { collection, doc, getDocs, query, setDoc, where, serverTimestamp } from "firebase/firestore";
 import useShowToast from "./useShowToast";
-import useAdminStore from "../store/adminStore";
 import { fetchSignInMethodsForEmail } from "firebase/auth";
 
 const useAdminSignUp = () => {
   const [createUserWithEmailAndPassword, , loading, error] = useCreateUserWithEmailAndPassword(auth);
   const showToast = useShowToast();
-  const adminUser = useAdminStore((state) => state.login);
 
   const signup = async (inputs) => {
     // Validate input fields
@@ -75,8 +73,6 @@ const useAdminSignUp = () => {
         // Save the admin document to Firestore
         await setDoc(doc(firestore, "admins", newAdmin.user.uid), adminDoc);
 
-        localStorage.setItem("admin-info", JSON.stringify(adminDoc));
-        adminUser(adminDoc); // Save admin user info to store
         showToast("Admin registered", "You have successfully registered, but not approved.", "warning");
       }
     } catch (error) {

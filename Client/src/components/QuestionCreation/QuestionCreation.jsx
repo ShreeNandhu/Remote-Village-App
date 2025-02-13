@@ -20,16 +20,17 @@ const QuestionCreation = () => {
   const [questionType, setQuestionType] = useState("");
   const [subjectName, setSubjectName] = useState("");
   const [standard, setStandard] = useState("");
+  const [board, setBoard] = useState("");
   const [mcqOptions, setMcqOptions] = useState([""]);
-  const [alertVisible, setAlertVisible] = useState(false);
   const [questions, setQuestions] = useState([]);
+  const [alertVisible, setAlertVisible] = useState(false);
 
   const { saveQuestion, loading, error } = useQuestionStorage();
   const showToast = useShowToast();
 
   const addMcqOption = () => {
     if (mcqOptions.length >= 4) {
-      alert("You can only add up to 4 options.");
+      showToast("Warning", "You can only add up to 4 options.", "warning");
       return;
     }
     setMcqOptions([...mcqOptions, ""]);
@@ -42,7 +43,7 @@ const QuestionCreation = () => {
   };
 
   const handleCreateQuestion = () => {
-    if (!question.trim() || !questionType || !subjectName || !standard) {
+    if (!question.trim() || !questionType || !subjectName || !standard || !board) {
       setAlertVisible(true);
       return;
     }
@@ -52,7 +53,8 @@ const QuestionCreation = () => {
       type: questionType,
       options: questionType === "MCQ" ? mcqOptions : null,
       subject: subjectName,
-      standard, // Add subject name
+      standard,
+      board,
     };
 
     setQuestions((prevQuestions) => [...prevQuestions, newQuestion]);
@@ -73,7 +75,12 @@ const QuestionCreation = () => {
       showToast("Warning", "No questions to publish.", "warning");
       return;
     }
-
+    
+    const confirmed = window.confirm(
+      "Are you sure you want to publish the questions?"
+    );
+    
+    if (!confirmed) return;
     const questionPaperId = `paper_${Date.now()}`;
 
     try {
@@ -95,7 +102,8 @@ const QuestionCreation = () => {
           mcqOptions: type === "MCQ" ? options : [],
           questionPaperId,
           subject,
-          standard, // Pass the subject when saving
+          standard,
+          board,
         });
       }
 
@@ -124,7 +132,7 @@ const QuestionCreation = () => {
             <FormControl id="subject-name" mb={4} isRequired>
               <FormLabel>Subject Name</FormLabel>
               <Input
-                placeholder="Subject Name "
+                placeholder="Subject Name"
                 value={subjectName}
                 onChange={(e) => setSubjectName(e.target.value)}
               />
@@ -138,6 +146,18 @@ const QuestionCreation = () => {
               >
                 <option value="10th">10th</option>
                 <option value="12th">12th</option>
+                <option value="Both">Both</option>
+              </Select>
+            </FormControl>
+            <FormControl id="board" mb={4} isRequired>
+              <FormLabel>Board</FormLabel>
+              <Select
+                placeholder="Select Board"
+                value={board}
+                onChange={(e) => setBoard(e.target.value)}
+              >
+                <option value="CBSE">CBSE</option>
+                <option value="Stateboard">Stateboard</option>
                 <option value="Both">Both</option>
               </Select>
             </FormControl>

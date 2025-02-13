@@ -1,20 +1,13 @@
-import React from 'react';
+import React from "react";
 import PageLayout from "../Layouts/PageLayout";
-import AdProfile from '../components/ProfileComponent/AdProfile';
-import UsProfile from '../components/ProfileComponent/UsProfile';
- // Import the user profile component
+import AdProfile from "../components/ProfileComponent/AdProfile";
+import UsProfile from "../components/ProfileComponent/UsProfile";
+import useAdminStore from "../store/adminStore";
 
-const Profilepage = () => {
-  // Get the role from localStorage
-  const role = localStorage.getItem('role');
+const ProfilePage = () => {
+  const { admin } = useAdminStore((state) => state);
 
-  return (
-    <PageLayout 
-      main={
-        role === 'admin' ? <AdProfile /> : <UsProfile /> // Render AdProfile for admin, USProfile for user
-      } 
-    />
-  );
+  return <PageLayout main={admin ? <AdProfile /> : <UsProfile />} />;
 };
 
-export default Profilepage;
+export default ProfilePage;

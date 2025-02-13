@@ -11,8 +11,8 @@ const useQuestionStorage = () => {
   const adminId = auth.currentUser?.uid || "unknown-admin";
   const db = getFirestore(); // Initialize Firestore
 
-  const saveQuestion = async ({ question, questionType, mcqOptions, questionPaperId, subject }) => {
-    if (!question || !questionType || !questionPaperId || !subject) {
+  const saveQuestion = async ({ question, questionType, mcqOptions, questionPaperId, subject , standard,board}) => {
+    if (!question || !questionType || !questionPaperId || !subject|| !standard||!board) {
       throw new Error("Question, question type, questionPaperId, and subject are required.");
     }
 
@@ -48,7 +48,9 @@ const useQuestionStorage = () => {
         await setDoc(questionPaperRef, {
           adminId,
           questionPaperId,
-          subject, // Add subject to the question paper document
+          subject,
+          standard,
+          board, // Add subject to the question paper document
           questions: [newQuestion], // Initialize with first question
         });
       }

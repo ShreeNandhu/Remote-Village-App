@@ -84,4 +84,4 @@ const SubjectMaterials = ({ selectedSubject }) => {
 };
 
 export default SubjectMaterials;
-export default SubjectMaterials;
+

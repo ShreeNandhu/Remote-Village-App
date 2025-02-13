@@ -1,34 +1,40 @@
-import { Button, Divider, Flex, Stack, Text, VStack } from "@chakra-ui/react";
+import {
+  Button,
+  Divider,
+  Flex,
+  Stack,
+  Text,
+  VStack,
+  Spinner,
+  Box,
+} from "@chakra-ui/react";
 import React, { useState } from "react";
-import CorrectionPage from "./CorrectionPage"; // Assuming this is the page you want to render after clicking "Evaluate"
+import CorrectionPage from "./CorrectionPage"; // Ensure CorrectionPage is imported
+import useFetchTestData from "../../hooks/useFetchTestdata";
 
 const StudentsList = () => {
-  const [showCorrectionPage, setShowCorrectionPage] = useState(false); // Correct state variable name
+  const { data, error, loading } = useFetchTestData();
+  const [showCorrectionPage, setShowCorrectionPage] = useState(false);
+  const [selectedUserId, setSelectedUserId] = useState(null);
+  const [selectedTestSubmit, setSelectedTestSubmit] = useState(null);
 
-  const handleEvaluateButton = () => {
-    setShowCorrectionPage(true); // Set to true when "Evaluate" button is clicked
+  const handleEvaluateButton = (studentId,testSubmit) => {
+    setSelectedUserId(studentId); // Store selected user ID
+    setSelectedTestSubmit(testSubmit); // Store selected user ID
+    setShowCorrectionPage(true); // Show correction page
   };
 
-  const Student = [
-    {
-      name: "example1",
-      email: "example@gmail.com",
-      subject: "Maths",
-    },
-    {
-      name: "example2",
-      email: "example2@gmail.com",
-      subject: "Science",
-    },
-    // Add more students as needed
-  ];
+  const handleBack = () => {
+    setShowCorrectionPage(false);
+    setSelectedUserId(null);
+  };
 
   return (
     <>
-      {!showCorrectionPage ? ( // Conditionally render CorrectionPage or Students List
+      {!showCorrectionPage ? (
         <>
-          <Text color="blue.500" fontSize="xl" fontWeight={"bold"} mb={2}>
-            Student Name
+          <Text color="blue.700" fontSize="xl" fontWeight="bold" mb={2} mt={2}>
+            List of Answer Sheets
           </Text>
           <Divider
             orientation="horizontal"
@@ -36,53 +42,69 @@ const StudentsList = () => {
             borderWidth="2px"
             mb={3}
           />
-          <Stack gap={2}>
-            {Student.map((s) => (
-              <Flex
-                key={s.email} // Add a unique key for each item
-                w="auto"
-                h="90px"
-                bg="gray.50"
-                borderRadius="md"
-                _hover={{ shadow: "md" }}
-                transition="shadow"
-                p={5}
-                alignItems="center"
-                flexDirection="row"
-                justifyContent="space-between"
-              >
-                {/* Left Side - Student Info */}
-                <Flex flexDirection="column">
-                  <Text fontSize="2xl" fontWeight="bold">
-                    {s.name}
-                  </Text>
-                  <Text fontSize="md" fontWeight="bold" color="gray.500">
-                    {s.email}
-                  </Text>
-                </Flex>
 
-                {/* Center - Subject */}
-                <VStack flex={1} mx={4} alignItems="center" spacing={0}>
-                  <Text fontSize="md" fontWeight="bold" color="gray">
-                    Subject:
-                  </Text>
-                  <Text fontSize="md" color="gray.600">
-                    {s.subject}
-                  </Text>
-                </VStack>
+          {loading ? (
+            <Box display="flex" justifyContent="center" alignItems="center" height="200px">
+            <Flex direction="column" align="center" gap={2}>
+              <Spinner size="xl" thickness="4px" speed="0.65s" color="blue.300" />
+              <Text fontSize="md" color="blue.200">Loading student responses...</Text>
+            </Flex>
+          </Box>
+          
+          ) : error ? (
+            <Text color="red.500">Error fetching students: {error}</Text>
+          ) : data?.length > 0 ? (
+            <Stack gap={4}>
+              {data.map((student) => (
+                <Flex
+                  key={student.userId}
+                  w="auto"
+                  h="90px"
+                  bg="gray.50"
+                  borderRadius="md"
+                  _hover={{ shadow: "md" }}
+                  transition="shadow 0.3s ease-in-out"
+                  p={5}
+                  alignItems="center"
+                  flexDirection="row"
+                  justifyContent="space-between"
+                >
+                  <Flex flexDirection="column">
+                    <Text fontSize="2xl" fontWeight="bold">
+                      {student.username}
+                    </Text>
+                    <Text fontSize="md" fontWeight="bold" color="gray.500">
+                      {student.email}
+                    </Text>
+                  </Flex>
 
-                {/* Right Side - Evaluate Button */}
-                <Flex>
-                  <Button colorScheme="green" mx={1} onClick={handleEvaluateButton}>
-                    Evaluate
-                  </Button>
+                  <VStack flex={1} mx={4} alignItems="center" spacing={0}>
+                    <Text fontSize="md" fontWeight="bold" color="gray">
+                      Subject:
+                    </Text>
+                    <Text fontSize="md" color="gray.600">
+                      {student.subject}
+                    </Text>
+                  </VStack>
+
+                  <Flex>
+                    <Button
+                      colorScheme="green"
+                      mx={1}
+                      onClick={() => handleEvaluateButton(student.userId,student.testSubmit)}
+                    >
+                      Evaluate
+                    </Button>
+                  </Flex>
                 </Flex>
-              </Flex>
-            ))}
-          </Stack>
+              ))}
+            </Stack>
+          ) : (
+            <Text>No students available.</Text>
+          )}
         </>
       ) : (
-        <CorrectionPage /> // Render the CorrectionPage component after Evaluate is clicked
+        <CorrectionPage userId={selectedUserId} submission={selectedTestSubmit} onBack={handleBack} />
       )}
     </>
   );

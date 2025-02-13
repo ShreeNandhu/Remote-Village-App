@@ -1,14 +1,20 @@
-import { Box, Flex, Stack, Text, Button, Textarea } from "@chakra-ui/react";
+import { Box, Flex, Stack, Text, Input } from "@chakra-ui/react";
 import React, { useState } from "react";
 
-const QuestionComponent = ({ questionName, questionType, questions, handleScoresUpdate }) => {
-  const [scores, setScores] = useState(questions.map(() => null)); // Initialize scores as an array
+const QuestionComponent = ({ questionName, questions, updateTotalScore }) => {
+  const [score, setScore] = useState(0); // Store the current score for this question
 
-  const handleScoreChange = (index, value) => {
-    const updatedScores = [...scores];
-    updatedScores[index] = value;
-    setScores(updatedScores); // Update the local state
-    handleScoresUpdate(updatedScores); // Notify parent component of the updated scores
+  const handleScoreChange = (e) => {
+    const value = parseFloat(e.target.value); // Convert input to number
+    if (isNaN(value)) return; // Ignore non-numeric input
+
+    const newScore = value; // New score input
+    const prevScore = score; // Store the previous score before update
+
+    setScore(newScore); // Update local state
+
+    // Update total score in CorrectionPage (add newScore, subtract prevScore)
+    updateTotalScore(newScore - prevScore);
   };
 
   return (
@@ -20,46 +26,24 @@ const QuestionComponent = ({ questionName, questionType, questions, handleScores
       </Flex>
 
       {questions.map((q, index) => (
-        <Box key={q.no} p={4} bg="gray.100" shadow="md" borderRadius="md">
-          <Text fontWeight="bold" mb={4}>
+        <Box key={q.no || `question-${index}`} p={4} bg="gray.100" shadow="md" borderRadius="md">
+          {/* Display Question */}
+          <Text fontWeight="bold" mb={2}>
             {q.question}
           </Text>
-          <Flex direction="column" gap={4}>
-            <Text bg="white" p={2} borderRadius="md" shadow="sm" whiteSpace="pre-wrap">
-              {q.answer}
-            </Text>
 
-            {questionType === "MCQ" ? (
-              // Show buttons for MCQ
-              <Flex gap={4}>
-                <Button
-                  colorScheme="green"
-                  onClick={() => handleScoreChange(index, 1)}
-                  isActive={scores[index] === 1}
-                >
-                  Right
-                </Button>
-                <Button
-                  colorScheme="red"
-                  onClick={() => handleScoreChange(index, 0)}
-                  isActive={scores[index] === 0}
-                >
-                  Wrong
-                </Button>
-              </Flex>
-            ) : questionType === "Text" ? (
-              // Show textarea for text-based questions
-              <Textarea
-                size="sm"
-                bg="white"
-                placeholder="Score"
-                value={scores[index] || ""}
-                onChange={(e) => handleScoreChange(index, parseInt(e.target.value) || 0)}
-              />
-            ) : (
-              <Text color="red.500">Unsupported question type</Text>
-            )}
-          </Flex>
+          {/* Display Answer */}
+          <Text bg="white" p={2} borderRadius="md" shadow="sm" mb="5px">
+            {q.answer}
+          </Text>
+
+          {/* Manual Score Input */}
+          <Input
+            size="sm"
+            bg="white"
+            placeholder="Enter Score"
+            onChange={handleScoreChange} // Updates total when the user types
+          />
         </Box>
       ))}
     </Stack>

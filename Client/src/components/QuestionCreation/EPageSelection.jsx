@@ -2,7 +2,7 @@ import { Stack, Text } from "@chakra-ui/react";
 import React from "react";
 
 const EPageSelection = ({ onOptionSelect }) => {
-  const options = ["Question Creation","Correction",];
+  const options = ["Question Creation","Correction","Questions"];
 
   return (
     <>

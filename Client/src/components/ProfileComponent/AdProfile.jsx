@@ -1,28 +1,20 @@
 import { Box, Button, Center, Flex, Text } from "@chakra-ui/react";
-import React, { useEffect } from "react";
-import useALogout from "../../hooks/useALogout"; // Ensure the hook is imported
-import useUserData from "../../hooks/useUserData"; // Import the custom hook
+import React from "react";
+import useUserData from "../../hooks/useUserData";
+import useALogout from "../../hooks/useALogout"; // Corrected import for logout hook
 import useAdminStore from "../../store/adminStore";
 
-const AdProfile = () => {
-  const { admin } = useAdminStore((state) => state);
-  const { handleLogout } = useALogout(); // Destructure handleLogout from the hook
-  const { userCount, userPapers, error } = useUserData(); // Get data from the custom hook
+const UsProfile = () => {
+  // Get admin details and logout function from Zustand store
+  const user = useAdminStore((state) => state.admin);
+  const { handleLogout } = useALogout(); // Using correct logout hook
+  const { userCount, userPapers, error } = useUserData();
 
-  // Check if admin exists and has a username
-  const username = admin?.username || "No username found";
+  // Ensure user exists and has a username
+  const username = user?.username || "No username found";
   const title = `Mr./Mrs. ${username}`;
-
-  // Fetch the total number of students and total questions created by the admin
   const totalStudents = userCount || 0; // Use the userCount from the custom hook
-  const totalQuestions = userPapers.length || 0; // Use the length of papers created by the user
-
-  useEffect(() => {
-    // Additional logic if needed when data is fetched or error occurs
-    if (error) {
-      console.error("Error fetching data:", error);
-    }
-  }, [error]);
+  const totalQuestions = userPapers.length || 0;
 
   return (
     <Box
@@ -35,7 +27,13 @@ const AdProfile = () => {
       p={6}
     >
       {/* Welcome Text */}
-      <Text fontSize="6xl" fontWeight="bold" color="red.500" textAlign="center" mb={4}>
+      <Text
+        fontSize="6xl"
+        fontWeight="bold"
+        color="blue.400"
+        textAlign="center"
+        mb={4}
+      >
         Welcome
       </Text>
 
@@ -49,29 +47,45 @@ const AdProfile = () => {
       {/* Categories - Total Students and Questions */}
       <Flex direction="row" spacing={8} w="800px" align="center" gap={2}>
         <Box
-          bg="blue.500" // Blue background for the total students box
+          bg="linear-gradient(to right, #2196f3, #00bcd4)"
           color="white"
-          w="80%"
-          p={8}
-          borderRadius="md"
+          w="50%"
+          p={5}
+          borderRadius="xl"
           boxShadow="lg"
           textAlign="center"
+          transition="transform 0.3s ease, box-shadow 0.3s ease"
+          _hover={{
+            boxShadow: "0 10px 23px rgba(0, 0, 200, 0.5)",
+          }}
         >
-          <Text fontSize="2xl" fontWeight="bold">Total User Strength</Text>
-          <Text fontSize="4xl" mt={4}>{totalStudents}</Text>
+          <Text fontSize="2xl" fontWeight="bold" mb={2}>
+            Total Students
+          </Text>
+          <Text fontSize="5xl" fontWeight="bold" mt={4}>
+            {totalStudents}
+          </Text>
         </Box>
 
         <Box
-          bg="red.600" // Darker red background for the total questions box
+          bg="linear-gradient(to left, #2196f4, #00bcd4)"
           color="white"
-          w="80%"
-          p={8}
-          borderRadius="md"
+          w="50%"
+          p={5}
+          borderRadius="xl"
           boxShadow="lg"
           textAlign="center"
+          transition="transform 0.3s ease, box-shadow 0.3s ease"
+          _hover={{
+            boxShadow: "0 10px 23px rgba(0, 0, 200, 0.5)",
+          }}
         >
-          <Text fontSize="2xl" fontWeight="bold">Total Questions Created</Text>
-          <Text fontSize="4xl" mt={4}>{totalQuestions}</Text>
+          <Text fontSize="2xl" fontWeight="bold" mb={2}>
+            Total Questions Created
+          </Text>
+          <Text fontSize="5xl" fontWeight="bold" mt={4}>
+            {totalQuestions}
+          </Text>
         </Box>
       </Flex>
 
@@ -81,7 +95,7 @@ const AdProfile = () => {
         bottom="20px"
         right="20px"
         colorScheme="red"
-        onClick={handleLogout} // Call handleLogout directly
+        onClick={handleLogout} // Directly calling the function
       >
         Logout
       </Button>
@@ -89,4 +103,4 @@ const AdProfile = () => {
   );
 };
 
-export default AdProfile;
+export default UsProfile;

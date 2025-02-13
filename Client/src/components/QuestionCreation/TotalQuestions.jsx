@@ -1,28 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { Button, Divider, Flex, Stack, Text, VStack, Spinner, Box } from "@chakra-ui/react";
-import Test from "./Test";
-import useFetchQuestions from "../../../hooks/useFetchQuestions";
-import useCheckQuestion from "../../../hooks/useCheckQuestion";
+import useFetchQuestions from "../../hooks/useFetchQuestions";
+import Question from "./Question"; // Import the QuestionList component
 
-
-const Uncompleted = () => {
+const TotalQuestions = () => {
   const { data, loading, error } = useFetchQuestions();
   const [selectedPaperId, setSelectedPaperId] = useState(null);
-  const { attended } = useCheckQuestion(selectedPaperId); // Use selectedPaperId for checking attendance
-  
 
+  // If a question paper is selected, render the QuestionList component
   if (selectedPaperId) {
-    // If the question paper is attended, stay on the same page and show a warning toast
-    if (attended) {
-      return (
-        <>
-          <Text color="blue.700" fontSize="xl" fontWeight="bold" mb={2} mt={2} textAlign={"center"}>
-            You have already attended this test. Please select another test if needed.
-          </Text>
-        </>
-      );
-    }
-    return <Test questionPaperId={selectedPaperId} />;
+    return <Question questionPaperId={selectedPaperId} onBack={() => setSelectedPaperId(null)} />;
   }
 
   // Ensure `data` is available before using reduce
@@ -42,7 +29,7 @@ const Uncompleted = () => {
   return (
     <>
       <Text color="blue.700" fontSize="xl" fontWeight="bold" mb={2} mt={2}>
-        List of Assessments
+        List of Question Papers
       </Text>
       <Divider orientation="horizontal" borderColor="black.500" borderWidth="2px" mb={3} />
       
@@ -79,7 +66,7 @@ const Uncompleted = () => {
                   <Text fontSize="md" color="gray.600">{data.board}</Text>
                 </VStack>
                 <Button colorScheme="green" onClick={() => setSelectedPaperId(questionPaperId)}>
-                  Start Test
+                  Show Paper
                 </Button>
               </Flex>
             </Flex>
@@ -92,4 +79,4 @@ const Uncompleted = () => {
   );
 };
 
-export default Uncompleted;
+export default TotalQuestions;

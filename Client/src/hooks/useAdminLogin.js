@@ -9,56 +9,48 @@ const useAdminLogin = () => {
   const showToast = useShowToast();
   const navigate = useNavigate();
   const [signInWithEmailAndPassword, , loading, error] = useSignInWithEmailAndPassword(auth);
-  const AdminUser = useAdminStore((state) => state.login);
+  
+  const { setAdmin } = useAdminStore(); // Zustand store function
 
   const login = async (inputs) => {
     if (!inputs.email || !inputs.password) {
       return showToast("Error", "Please fill all the fields", "error");
     }
+
     try {
-      // Attempt to sign in
+      // Sign in with email and password
       const userCred = await signInWithEmailAndPassword(inputs.email, inputs.password);
 
-      if (userCred) {
-        // Retrieve the admin document from Firestore
-        const docRef = doc(firestore, "admins", userCred.user.uid);
-        const docSnap = await getDoc(docRef);
+      if (!userCred) return;
 
-        if (docSnap.exists()) {
-          const adminData = docSnap.data();
+      // Fetch admin data from Firestore
+      const docRef = doc(firestore, "admins", userCred.user.uid);
+      const docSnap = await getDoc(docRef);
 
-          // Check if the admin is approved
-		  if (adminData?.approved) {
-            // Store admin info in localStorage and Zustand store
-            localStorage.setItem("admin-info", JSON.stringify(adminData));
-            AdminUser(adminData);
+      if (docSnap.exists()) {
+        const adminData = docSnap.data();
 
-            // Navigate to admin dashboard or home page
-            navigate("/");
-          } else {
-            // Deny login if not approved
-            return showToast("Error", "Your account is not approved yet. Please contact support.", "error");
-          }
+        if (adminData?.approved) {
+          // Store admin info in Zustand store and localStorage
+          setAdmin(adminData);
+
+          // Navigate to admin dashboard
+          navigate("/");
         } else {
-          // Document not found
-          return showToast("Error", "No admin account found. Please contact support.", "error");
+          return showToast("Error", "Your account is not approved yet. Please contact support.", "error");
         }
+      } else {
+        return showToast("Error", "No admin account found. Please contact support.", "error");
       }
     } catch (error) {
-      // Handle incorrect password or other errors
+      // Handle specific Firebase auth errors
       if (error.code === "auth/wrong-password") {
         showToast("Error", "Incorrect password. Please try again.", "error");
-        console.error("Firebase Error:", error);
       } else if (error.code === "auth/user-not-found") {
         showToast("Error", "No user found with this email. Please check the email or sign up.", "error");
       } else {
         showToast("Error", error.message, "error");
       }
-
-      // Reload the page to reset state after error
-      setTimeout(() => {
-        window.location.reload();
-      }, 1000); // Reload after showing the toast
     }
   };
 

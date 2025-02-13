@@ -1,10 +1,15 @@
 import { create } from "zustand";
 
 const useAdminStore = create((set) => ({
-	admin: JSON.parse(localStorage.getItem("admin-info")),
-	login: (admin) => set({ admin }),
-	logout: () => set({ admin: null }),
-	setAdmin: (admin) => set({ admin }),
+  admin: JSON.parse(localStorage.getItem("admin-info")) || null, // Load from localStorage on init
+  setAdmin: (admin) => {
+    localStorage.setItem("admin-info", JSON.stringify(admin)); // Save to localStorage
+    set({ admin });
+  },
+  logout: () => {
+    localStorage.removeItem("admin-info"); // Remove admin data
+    set({ admin: null });
+  },
 }));
 
 export default useAdminStore;
