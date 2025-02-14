@@ -34,7 +34,7 @@ const UsProfile = () => {
         textAlign="center"
         mb={4}
       >
-        Welcome
+       Profile
       </Text>
 
       {/* Username - Centered */}

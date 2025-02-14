@@ -16,7 +16,7 @@ const SubjectMaterials = ({ selectedSubject }) => {
         Notes
       </Text>
       <Divider orientation="horizontal" borderColor="black.500" borderWidth="2px" mb={3} />
-      <Stack gap={2}>
+      <Stack gap={2} overflow={"auto"}>
         {loading ? (
           <Box display="flex" justifyContent="center" alignItems="center" height="200px">
             <Spinner size="xl" thickness="4px" speed="0.65s" color="blue.300" />
@@ -27,50 +27,52 @@ const SubjectMaterials = ({ selectedSubject }) => {
           filteredDocuments.length > 0 ? (
             filteredDocuments.map((doc) => (
               <Flex
-                key={doc.id}
-                w="auto"
-                h="90px"
-                bg="gray.200"
-                borderRadius="md"
-                _hover={{ shadow: "md" }}
-                transition="shadow"
-                p={3}
-                alignItems="center"
-                flexDirection="row"
-                justifyContent="space-between"
-              >
-                {/* Left Side - File Name */}
-                <Text fontSize="3xl" fontWeight="bold">
-                  {doc.fileName || "Example File"} {/* Display file name */}
+              key={doc.id}
+              w="100%"
+              maxW="100%"
+              h="90px"
+              bg="gray.100"
+              borderRadius="md"
+              _hover={{ shadow: "lg" }}
+              transition="all 0.2s ease-in-out"
+              p={4}
+              alignItems="center"
+              justifyContent="space-between"
+            >
+              {/* Left - File Name */}
+              <Text fontSize="lg" fontWeight="bold" flex="1" noOfLines={1}>
+                {doc.fileName || "Example File"}
+              </Text>
+        
+              {/* Center - Standard */}
+              <VStack flex="1" align="center" spacing={0}>
+                <Text fontSize="sm" fontWeight="bold" color="gray.500">
+                  Standard
                 </Text>
-
-                {/* Center - Standard */}
-                <VStack flex={1} mx={4} alignItems="center" spacing={0}>
-                  <Text fontSize="md" fontWeight="bold" color="gray">
-                    Standard:
-                  </Text>
-                  <Text fontSize="md" color="gray.600">
-                    {doc.standard || "N/A"} {/* Display standard */}
-                  </Text>
-                </VStack>
-
-                {/* Center - Board */}
-                <VStack flex={1} mx={4} alignItems="center" spacing={0}>
-                  <Text fontSize="md" fontWeight="bold" color="gray">
-                    Board
-                  </Text>
-                  <Text fontSize="md" color="gray.600">
-                    {doc.board || "N/A"} {/* Display board */}
-                  </Text>
-                </VStack>
-
-                {/* Right Side - Download Button */}
-                <Flex>
-                  <Button colorScheme="green" mx={1} onClick={() => window.open(doc.url, "_blank")}>
-                    Download
-                  </Button>
-                </Flex>
-              </Flex>
+                <Text fontSize="sm" color="gray.700">
+                  {doc.standard || "N/A"}
+                </Text>
+              </VStack>
+        
+              {/* Center - Board */}
+              <VStack flex="1" align="center" spacing={0}>
+                <Text fontSize="sm" fontWeight="bold" color="gray.500">
+                  Board
+                </Text>
+                <Text fontSize="sm" color="gray.700">
+                  {doc.board || "N/A"}
+                </Text>
+              </VStack>
+        
+              {/* Right - Download Button */}
+              <Button
+                colorScheme="green"
+                size="sm"
+                onClick={() => window.open(doc.url, "_blank")}
+              >
+                Download
+              </Button>
+            </Flex>
             ))
           ) : (
             <Text color="gray.600" fontStyle="italic">

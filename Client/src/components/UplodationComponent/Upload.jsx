@@ -106,6 +106,7 @@ const Upload = () => {
             <option value="10th">10th</option>
             <option value="11th">11th</option>
             <option value="12th">12th</option>
+            <option value="All">All</option>
           </Select>
         </FormControl>
 
@@ -120,6 +121,7 @@ const Upload = () => {
           >
             <option value="CBSE">CBSE</option>
             <option value="Stateboard">Stateboard</option>
+            <option value="All">All</option>
           </Select>
         </FormControl>
 
@@ -200,9 +202,6 @@ const Upload = () => {
             <AlertTitle>Error: {error}</AlertTitle>
           </Alert>
         )}
-
-        {/* Show loading spinner while documents are being uploaded */}
-        {loading && <Spinner size="xl" color="red.500" mt={4} />}
       </Box>
     </>
   );

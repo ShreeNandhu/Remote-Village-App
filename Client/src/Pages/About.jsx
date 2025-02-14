@@ -111,6 +111,7 @@ const About = () => {
             mx="auto"
             textAlign="justify"
             fontWeight="bold"
+            mt={2}
           >
             <Text>Dr. P. Vaishnavi,Faculty Member,Web Development Team.</Text>
           </Box>
